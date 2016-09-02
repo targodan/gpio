@@ -30,16 +30,32 @@ func (p *Pin) Close() {
 	p.f.Close()
 }
 
-func (p *Pin) SetOutput() error {
+func (p *Pin) Output() error {
 	p.direction = DirectionOut
-	val, _ := p.Read()
-	return setDirection(*p, DirectionOut, val)
+	var err error
+	if p.f != nil {
+		val, _ := p.Read()
+		p.f.Close()
+		err = setDirection(*p, DirectionOut, val)
+	} else {
+		err = setDirection(*p, DirectionOut, 0)
+	}
+	if err != nil {
+		return err
+	}
+	return openPin(p, write)
 }
 
-func (p *Pin) SetInput() error {
+func (p *Pin) Input() error {
 	p.direction = DirectionIn
-	val, _ := p.Read()
-	return setDirection(*p, DirectionIn, val)
+	if p.f != nil {
+		p.f.Close()
+	}
+	err = setDirection(*p, DirectionIn, 0)
+	if err != nil {
+		return err
+	}
+	return openPin(p, read)
 }
 
 // Read returns the value read at the pin as reported by the kernel. This should only be used for input pins
@@ -48,7 +64,7 @@ func (p Pin) Read() (value State, err error) {
 }
 
 // High sets the value of an output pin to logic high
-func (p *Pin) SetHigh() error {
+func (p *Pin) High() error {
 	if p.direction != DirectionOut {
 		return errors.New("pin is not configured for output")
 	}
@@ -56,7 +72,7 @@ func (p *Pin) SetHigh() error {
 }
 
 // Low sets the value of an output pin to logic low
-func (p *Pin) SetLow() error {
+func (p *Pin) Low() error {
 	if p.direction != DirectionOut {
 		return errors.New("pin is not configured for output")
 	}
