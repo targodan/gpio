@@ -20,8 +20,8 @@ func NewPin(p uint) (*Pin, error) {
 	}
 	err := exportGPIO(*pin)
 	time.Sleep(10 * time.Millisecond)
-	err = pin.SetOutput()
-	err = pin.SetLow()
+	err = pin.Output()
+	err = pin.Low()
 	return pin, err
 }
 
