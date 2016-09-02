@@ -204,11 +204,12 @@ func (w *Watcher) AddPin(p uint, edge Edge) error {
 		return err
 	}
 	pin.Input()
-	setEdgeTrigger(pin, edge)
+	setEdgeTrigger(*pin, edge)
 	w.cmdChan <- watcherCmd{
-		pin:    pin,
+		pin:    *pin,
 		action: watcherAdd,
 	}
+	return nil
 }
 
 // RemovePin stops the watcher from watching the specified pin
