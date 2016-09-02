@@ -1,4 +1,13 @@
+//go:generate stringer -type=enums,Direction,Edge,State,PullMode
+
 package gpio
+
+// Just for nicer output
+type enums uint
+
+const (
+	dummy enums = iota
+)
 
 type Direction uint
 
