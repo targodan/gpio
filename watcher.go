@@ -95,7 +95,7 @@ func (w *Watcher) notify(fdset *syscall.FdSet) {
 			}
 			msg := watcherNotify{
 				pin:   pin,
-				value: val,
+				value: val.(uint),
 			}
 			select {
 			case w.notifyChan <- msg:
@@ -198,9 +198,10 @@ func (w *Watcher) watch() {
 
 // AddPin adds a new pin to be watched for changes
 // The pin provided should be the pin known by the kernel
-func (w *Watcher) AddPin(p uint) {
-	pin := NewInput(p)
-	setEdgeTrigger(pin, edgeBoth)
+func (w *Watcher) AddPin(p uint, edge Edge) {
+	pin := NewPin(p)
+	pin.Input()
+	setEdgeTrigger(pin, edge)
 	w.cmdChan <- watcherCmd{
 		pin:    pin,
 		action: watcherAdd,

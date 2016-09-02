@@ -43,7 +43,7 @@ func (p *Pin) Output() error {
 	if err != nil {
 		return err
 	}
-	return openPin(p, write)
+	return openPin(p, true)
 }
 
 func (p *Pin) Input() error {
@@ -51,11 +51,11 @@ func (p *Pin) Input() error {
 	if p.f != nil {
 		p.f.Close()
 	}
-	err = setDirection(*p, DirectionIn, 0)
+	err := setDirection(*p, DirectionIn, 0)
 	if err != nil {
 		return err
 	}
-	return openPin(p, read)
+	return openPin(p, false)
 }
 
 // Read returns the value read at the pin as reported by the kernel. This should only be used for input pins
